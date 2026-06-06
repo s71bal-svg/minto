@@ -331,19 +331,19 @@
           </div>
           <div class="todo-list" id="todoList"></div>
         </section>
-
-        <section class="card panel">
-          <h2 class="section-title">Status</h2>
-          <p class="section-copy">進捗や今日の集中量を見える化します。</p>
-          <div class="mini-grid">
-            <div class="stat"><strong id="sessionCount">0</strong><span>completed sessions</span></div>
-            <div class="stat"><strong id="focusTotal">0m</strong><span>focus time</span></div>
-            <div class="stat"><strong id="breakTotal">0m</strong><span>break time</span></div>
-          </div>
-          <div style="margin-top:1rem;" class="progress" aria-label="progress bar"><div id="progressBar"></div></div>
-        </section>
       </aside>
     </main>
+
+    <section class="card panel" style="margin-top:1rem;">
+      <h2 class="section-title">Status</h2>
+      <p class="section-copy">進捗や今日の集中量を見える化します。</p>
+      <div class="mini-grid">
+        <div class="stat"><strong id="sessionCount">0</strong><span>completed sessions</span></div>
+        <div class="stat"><strong id="focusTotal">0m</strong><span>focus time</span></div>
+        <div class="stat"><strong id="breakTotal">0m</strong><span>break time</span></div>
+      </div>
+      <div style="margin-top:1rem;" class="progress" aria-label="progress bar"><div id="progressBar"></div></div>
+    </section>
 
     <footer class="footer">minto. / Pomodoro Timer</footer>
   </div>
@@ -400,6 +400,7 @@
         tracks[key].audio.loop=true;
         tracks[key].audio.preload='auto'
       }
+      tracks[key].audio.loop=true;
       tracks[key].audio.volume=state.ambientVolume/100;
       return tracks[key].audio
     };
@@ -456,8 +457,12 @@
       document.title=`${pad(minutes)}:${pad(seconds)} | ${state.mode.toUpperCase()} - minto.`
     };
     const bell=()=>{try{const ctx=new (window.AudioContext||window.webkitAudioContext)();const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=880;o.type='sine';g.gain.setValueAtTime(0.0001,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.2,ctx.currentTime+0.02);g.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+0.8);o.start();o.stop(ctx.currentTime+0.85)}catch(e){}};
+    const countdownBeep=(freq,when,duration=0.11)=>{try{const ctx=new (window.AudioContext||window.webkitAudioContext)();const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=freq;o.type='sine';g.gain.setValueAtTime(0.0001,when);g.gain.exponentialRampToValueAtTime(0.18,when+0.01);g.gain.exponentialRampToValueAtTime(0.0001,when+duration);o.start(when);o.stop(when+duration+0.02)}catch(e){}};
     const tick=()=>{
-      if(state.remaining>0){state.remaining-=1;updateUI();return}
+      if(state.remaining>0){
+        if(state.remaining<=3){const ctx=new (window.AudioContext||window.webkitAudioContext)();const base=ctx.currentTime;[880,740,660].slice(0,state.remaining).forEach((f,i)=>countdownBeep(f,base+i*0.28))}
+        state.remaining-=1;updateUI();return
+      }
       clearInterval(state.interval);state.interval=null;state.running=false;updateUI();bell();setToast('Session complete');nextMode()
     };
     const start=()=>{

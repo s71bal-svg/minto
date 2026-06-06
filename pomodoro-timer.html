@@ -20,7 +20,8 @@
     .timer-face{position:relative;z-index:1;text-align:center;padding:1rem}.mode{display:inline-flex;align-items:center;gap:.45rem;padding:.55rem .9rem;border-radius:9999px;background:var(--accent-soft);color:var(--primary);font-weight:700;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase}.time{margin:.9rem 0 .35rem;font-family:var(--display);font-size:clamp(4rem,12vw,7rem);line-height:.9;letter-spacing:-.06em}.sub{margin:0;color:var(--muted);font-size:.92rem}
     .btn-row{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center;margin-top:1.2rem}.btn{min-height:3.1rem;display:inline-flex;align-items:center;justify-content:center;padding:0 1.15rem;border-radius:9999px;font-weight:700;border:1px solid color-mix(in oklab,var(--text) 10%,transparent);background:color-mix(in oklab,var(--surface-2) 62%,transparent);transition:transform 240ms cubic-bezier(0.16,1,0.3,1),background 240ms cubic-bezier(0.16,1,0.3,1)}.btn:hover{transform:translateY(-1px)}.btn-primary{background:var(--primary);color:#f7fbf8;border:0}.btn-danger{background:color-mix(in oklab,var(--danger) 12%,var(--surface));color:var(--danger)}
     .side{display:grid;gap:1rem}.section-title{margin:0;font-size:1.25rem;letter-spacing:-.02em}.section-copy{margin:.35rem 0 0;color:var(--muted);font-size:.95rem;line-height:1.75}
-    .settings{display:grid;gap:.85rem}.field{display:grid;gap:.4rem}.field label{font-size:.9rem;font-weight:600;color:var(--text)}.field input{width:100%;min-height:2.9rem;padding:.75rem .95rem;border-radius:1rem;border:1px solid color-mix(in oklab,var(--text) 10%,transparent);background:color-mix(in oklab,var(--surface) 88%,transparent)}.mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}.stat{padding:1rem;border-radius:1.15rem;background:color-mix(in oklab,var(--surface-2) 76%,transparent);border:1px solid color-mix(in oklab,var(--text) 6%,transparent)}.stat strong{display:block;font-size:1.15rem}.stat span{display:block;margin-top:.2rem;color:var(--muted);font-size:.82rem}
+    .settings{display:grid;gap:.85rem}.field{display:grid;gap:.4rem}.field label{font-size:.9rem;font-weight:600;color:var(--text)}.field input{width:100%}.field input[type="range"]{accent-color:var(--primary);height:2rem}.range-value{margin-top:.15rem;color:var(--muted);font-size:.85rem}
+    .mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}.stat{padding:1rem;border-radius:1.15rem;background:color-mix(in oklab,var(--surface-2) 76%,transparent);border:1px solid color-mix(in oklab,var(--text) 6%,transparent)}.stat strong{display:block;font-size:1.15rem}.stat span{display:block;margin-top:.2rem;color:var(--muted);font-size:.82rem}
     .progress{height:.8rem;border-radius:9999px;overflow:hidden;background:color-mix(in oklab,var(--surface-2) 80%,transparent);border:1px solid color-mix(in oklab,var(--text) 6%,transparent)}.progress > div{height:100%;width:var(--progress,0%);background:linear-gradient(90deg,var(--primary),var(--accent))}
     .footer{margin-top:1rem;text-align:center;color:var(--faint);font-size:.75rem}.toast{min-height:1.25rem;text-align:center;color:var(--muted);font-size:.9rem;margin-top:.8rem}
     @media (max-width:900px){.shell{grid-template-columns:1fr}.time{font-size:clamp(3.5rem,16vw,6rem)}}
@@ -36,6 +37,7 @@
       </div>
       <button class="theme-btn" type="button" id="themeToggle" aria-label="テーマ切り替え"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
     </header>
+
     <nav class="site-nav" aria-label="サイト内ナビゲーション"><a href="./index.html">Home</a><a href="./pomodoro-timer.html">Pomodoro</a><a href="./tool/index.html">Tools</a><a href="./index.html#gallery">Gallery</a><a href="./index.html#contact">Contact</a></nav>
 
     <main class="shell">
@@ -66,11 +68,21 @@
           <h2 class="section-title">Settings</h2>
           <p class="section-copy">時間を変えると、そのまま自分用のタイマーとして使えます。</p>
           <div class="settings">
-            <div class="field"><label for="workMinutes">Work minutes</label><input id="workMinutes" type="number" min="1" max="180" value="25"></div>
-            <div class="field"><label for="shortBreakMinutes">Short break minutes</label><input id="shortBreakMinutes" type="number" min="1" max="60" value="5"></div>
-            <div class="field"><label for="longBreakMinutes">Long break minutes</label><input id="longBreakMinutes" type="number" min="1" max="90" value="15"></div>
+            <div class="field"><label for="workMinutes">Work minutes</label><input id="workMinutes" type="range" min="1" max="180" value="25"><div class="range-value" id="workMinutesValue">25 min</div></div>
+            <div class="field"><label for="shortBreakMinutes">Short break minutes</label><input id="shortBreakMinutes" type="range" min="1" max="60" value="5"><div class="range-value" id="shortBreakMinutesValue">5 min</div></div>
+            <div class="field"><label for="longBreakMinutes">Long break minutes</label><input id="longBreakMinutes" type="range" min="1" max="90" value="15"><div class="range-value" id="longBreakMinutesValue">15 min</div></div>
             <button class="btn" id="applyBtn" type="button">Apply settings</button>
           </div>
+        </section>
+
+        <section class="card panel">
+          <h2 class="section-title">TODO</h2>
+          <p class="section-copy">作業中のタスクを小さく管理できます。</p>
+          <div class="todo-form" style="display:flex;gap:.75rem;flex-wrap:wrap;">
+            <input id="todoInput" type="text" placeholder="Add a task" style="flex:1;min-height:2.9rem;padding:.75rem .95rem;border-radius:1rem;border:1px solid color-mix(in oklab,var(--text) 10%,transparent);background:color-mix(in oklab,var(--surface) 88%,transparent)">
+            <button class="btn btn-primary" id="addTodoBtn" type="button">Add</button>
+          </div>
+          <div class="todo-list" id="todoList" style="display:grid;gap:.65rem;margin-top:1rem;"></div>
         </section>
 
         <section class="card panel">
@@ -103,25 +115,33 @@
     const workMinutesInput = document.getElementById('workMinutes');
     const shortBreakMinutesInput = document.getElementById('shortBreakMinutes');
     const longBreakMinutesInput = document.getElementById('longBreakMinutes');
+    const workMinutesValue = document.getElementById('workMinutesValue');
+    const shortBreakMinutesValue = document.getElementById('shortBreakMinutesValue');
+    const longBreakMinutesValue = document.getElementById('longBreakMinutesValue');
+    const todoInput = document.getElementById('todoInput');
+    const addTodoBtn = document.getElementById('addTodoBtn');
+    const todoList = document.getElementById('todoList');
     const sessionCountEl = document.getElementById('sessionCount');
     const focusTotalEl = document.getElementById('focusTotal');
     const breakTotalEl = document.getElementById('breakTotal');
     const progressBar = document.getElementById('progressBar');
     const themeToggle = document.getElementById('themeToggle');
 
-    const state = { mode:'work', running:false, interval:null, remaining:25*60, total:25*60, sessions:0, focusTotal:0, breakTotal:0, work:25, shortBreak:5, longBreak:15 };
+    const state = { mode:'work', running:false, interval:null, remaining:25*60, total:25*60, sessions:0, focusTotal:0, breakTotal:0, work:25, shortBreak:5, longBreak:15, todos:[] };
     let theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     root.setAttribute('data-theme', theme);
 
     const pad = n => String(n).padStart(2,'0');
-    const save = () => localStorage.setItem('minto-pomodoro', JSON.stringify({work:state.work,shortBreak:state.shortBreak,longBreak:state.longBreak,theme,stateCount:state.sessions,focus:state.focusTotal,breakT:state.breakTotal}));
+    const save = () => localStorage.setItem('minto-pomodoro', JSON.stringify({work:state.work,shortBreak:state.shortBreak,longBreak:state.longBreak,theme,stateCount:state.sessions,focus:state.focusTotal,breakT:state.breakTotal,todos:state.todos}));
     const load = () => {
-      try { const saved = JSON.parse(localStorage.getItem('minto-pomodoro') || '{}'); if(saved.work) state.work = saved.work; if(saved.shortBreak) state.shortBreak = saved.shortBreak; if(saved.longBreak) state.longBreak = saved.longBreak; if(saved.theme) { theme = saved.theme; root.setAttribute('data-theme', theme); } state.sessions = saved.stateCount || 0; state.focusTotal = saved.focus || 0; state.breakTotal = saved.breakT || 0; } catch(e) {}
+      try { const saved = JSON.parse(localStorage.getItem('minto-pomodoro') || '{}'); if(saved.work) state.work = saved.work; if(saved.shortBreak) state.shortBreak = saved.shortBreak; if(saved.longBreak) state.longBreak = saved.longBreak; if(saved.theme) { theme = saved.theme; root.setAttribute('data-theme', theme); } state.sessions = saved.stateCount || 0; state.focusTotal = saved.focus || 0; state.breakTotal = saved.breakT || 0; state.todos = Array.isArray(saved.todos) ? saved.todos : []; } catch(e) {}
     };
     const setToast = msg => { toast.textContent = msg; clearTimeout(setToast.t); setToast.t = setTimeout(()=>toast.textContent='', 1800); };
     const currentDuration = () => (state.mode === 'work' ? state.work : state.mode === 'short' ? state.shortBreak : state.longBreak) * 60;
     const setMode = mode => { state.mode = mode; state.total = currentDuration(); state.remaining = state.total; updateUI(); };
     const nextMode = () => { if(state.mode === 'work') { state.sessions += 1; state.focusTotal += state.work; setMode(state.sessions % 4 === 0 ? 'long' : 'short'); state.breakTotal += state.mode === 'long' ? state.longBreak : state.shortBreak; } else setMode('work'); save(); };
+    const renderTodos = () => { todoList.innerHTML = ''; if(!state.todos.length){ todoList.innerHTML = '<div class="mini-item">TODOはまだありません。</div>'; return; } state.todos.forEach((todo, i) => { const row = document.createElement('div'); row.className = 'mini-item'; row.style.display = 'flex'; row.style.alignItems = 'center'; row.style.justifyContent = 'space-between'; row.style.gap = '.75rem'; row.innerHTML = `<label style="display:flex;align-items:center;gap:.7rem;cursor:pointer;"><input type="checkbox" ${todo.done ? 'checked' : ''} data-i="${i}"> <span style="text-decoration:${todo.done ? 'line-through' : 'none'};color:${todo.done ? 'var(--faint)' : 'inherit'}">${todo.text}</span></label><button class="btn" type="button" data-del="${i}">削除</button>`; todoList.appendChild(row); }); };
+    const updateRanges = () => { workMinutesValue.textContent = `${workMinutesInput.value} min`; shortBreakMinutesValue.textContent = `${shortBreakMinutesInput.value} min`; longBreakMinutesValue.textContent = `${longBreakMinutesInput.value} min`; };
     const updateUI = () => {
       const minutes = Math.floor(state.remaining / 60), seconds = state.remaining % 60;
       timeDisplay.textContent = `${pad(minutes)}:${pad(seconds)}`;
@@ -144,13 +164,18 @@
 
     load();
     workMinutesInput.value = state.work; shortBreakMinutesInput.value = state.shortBreak; longBreakMinutesInput.value = state.longBreak;
-    state.total = currentDuration(); state.remaining = state.total; updateUI();
+    state.total = currentDuration(); state.remaining = state.total; updateRanges(); renderTodos(); updateUI();
 
     startPauseBtn.addEventListener('click', () => state.running ? pause() : start());
     resetBtn.addEventListener('click', reset);
     skipBtn.addEventListener('click', () => { pause(); nextMode(); setToast('Skipped'); });
-    applyBtn.addEventListener('click', () => { state.work = Math.max(1, Math.min(180, parseInt(workMinutesInput.value || '25', 10))); state.shortBreak = Math.max(1, Math.min(60, parseInt(shortBreakMinutesInput.value || '5', 10))); state.longBreak = Math.max(1, Math.min(90, parseInt(longBreakMinutesInput.value || '15', 10))); state.total = currentDuration(); state.remaining = state.total; pause(); updateUI(); save(); setToast('Settings applied'); });
+    [workMinutesInput, shortBreakMinutesInput, longBreakMinutesInput].forEach(el => el.addEventListener('input', () => { updateRanges(); }));
+    applyBtn.addEventListener('click', () => { state.work = Math.max(1, Math.min(180, parseInt(workMinutesInput.value || '25', 10))); state.shortBreak = Math.max(1, Math.min(60, parseInt(shortBreakMinutesInput.value || '5', 10))); state.longBreak = Math.max(1, Math.min(90, parseInt(longBreakMinutesInput.value || '15', 10))); state.total = currentDuration(); state.remaining = state.total; pause(); updateRanges(); updateUI(); save(); setToast('Settings applied'); });
+    addTodoBtn.addEventListener('click', () => { const text = todoInput.value.trim(); if(!text) return; state.todos.unshift({text, done:false}); todoInput.value = ''; renderTodos(); save(); });
+    todoList.addEventListener('click', e => { const del = e.target.closest('[data-del]'); if(del){ state.todos.splice(Number(del.dataset.del), 1); renderTodos(); save(); } });
+    todoList.addEventListener('change', e => { const cb = e.target.closest('input[type=checkbox][data-i]'); if(cb){ state.todos[Number(cb.dataset.i)].done = cb.checked; renderTodos(); save(); } });
     themeToggle.addEventListener('click', () => { theme = theme === 'dark' ? 'light' : 'dark'; root.setAttribute('data-theme', theme); save(); });
+    todoInput.addEventListener('keydown', e => { if(e.key === 'Enter'){ addTodoBtn.click(); } });
     window.addEventListener('beforeunload', save);
   </script>
 </body>

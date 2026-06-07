@@ -18,6 +18,19 @@
       --danger-text: #ff6666;
     }
 
+    /* ライトモード */
+    [data-theme="light"] {
+      --bg: #f5f1ea;
+      --card: rgba(255, 255, 255, 0.95);
+      --border: rgba(0, 0, 0, 0.10);
+      --text: #1a140d;
+      --muted: #5a5248;
+      --primary: #d4a57a;
+      --shadow: 0 18px 60px rgba(0, 0, 0, 0.15);
+      --danger-bg: #ffcccc;
+      --danger-text: #cc0000;
+    }
+
     * { box-sizing: border-box; }
 
     html { scroll-behavior: smooth; }
@@ -30,6 +43,13 @@
         linear-gradient(180deg, #12131a 0%, #0f1013 100%);
       color: var(--text);
       min-height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    [data-theme="light"] body {
+      background:
+        radial-gradient(circle at top, rgba(212, 165, 122, 0.10), transparent 30%),
+        linear-gradient(180deg, #faf6ed 0%, #f5f1ea 100%);
     }
 
     a { color: inherit; text-decoration: none; }
@@ -69,6 +89,10 @@
       -webkit-backdrop-filter: blur(18px);
     }
 
+    [data-theme="light"] .nav {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
     .nav a {
       padding: 0.55rem 0.9rem;
       border-radius: 9999px;
@@ -77,6 +101,11 @@
       font-weight: 600;
       font-size: 0.95rem;
       transition: all 0.2s;
+    }
+
+    [data-theme="light"] .nav a {
+      background: rgba(0, 0, 0, 0.03);
+      border: 1px solid rgba(0, 0, 0, 0.08);
     }
 
     .nav a:hover {
@@ -98,6 +127,7 @@
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
       padding: 1.5rem;
+      transition: background 0.3s, border 0.3s;
     }
 
     .section-title {
@@ -130,9 +160,18 @@
       font-size: 0.95rem;
     }
 
+    [data-theme="light"] .btn {
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      background: rgba(0, 0, 0, 0.04);
+    }
+
     .btn:hover {
       background: rgba(255, 255, 255, 0.08);
       border-color: rgba(255, 255, 255, 0.20);
+    }
+
+    [data-theme="light"] .btn:hover {
+      background: rgba(0, 0, 0, 0.08);
     }
 
     .btn-primary {
@@ -145,6 +184,34 @@
       background: linear-gradient(180deg, #f0ddb8, #e0bf88);
     }
 
+    /* ダーク/ライトモード切り替えボタン */
+    .theme-toggle {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(226, 199, 154, 0.4);
+    }
+
     /* 横長の天気枠 */
     .weather-wide {
       background: #1a1a1a;
@@ -154,6 +221,12 @@
       text-align: center;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       border: 1px solid #333;
+    }
+
+    [data-theme="light"] .weather-wide {
+      background: #faf6ed;
+      color: #1a140d;
+      border: 1px solid #d4a57a;
     }
 
     .weather-wide h2 {
@@ -175,6 +248,12 @@
       border-radius: 6px;
       cursor: pointer;
       width: 220px;
+    }
+
+    [data-theme="light"] .weather-selector select {
+      background: #f5f1ea;
+      color: #1a140d;
+      border: 1px solid #d4a57a;
     }
 
     .weather-selector select:focus {
@@ -213,6 +292,10 @@
       font-size: 12px;
     }
 
+    [data-theme="light"] .weather-item-label {
+      color: #8a8278;
+    }
+
     .weather-item-value {
       font-size: 16px;
       font-weight: 600;
@@ -232,6 +315,36 @@
       color: #667eea;
       font-size: 14px;
       margin-top: 10px;
+    }
+
+    [data-theme="light"] .current-city-wide {
+      color: #8a623a;
+    }
+
+    /* お気に入りセクション */
+    .favorites-section {
+      display: none;
+      margin-bottom: 1.5rem;
+    }
+
+    .favorites-section.active {
+      display: block;
+    }
+
+    .favorites-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .favorites-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
     }
 
     /* 横長のツールカード */
@@ -255,10 +368,19 @@
       text-align: center;
     }
 
+    [data-theme="light"] .tool-card-wide {
+      background: rgba(0, 0, 0, 0.04);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
     .tool-card-wide:hover {
       background: rgba(255, 255, 255, 0.06);
       border-color: rgba(226, 199, 154, 0.2);
       transform: translateY(-2px);
+    }
+
+    [data-theme="light"] .tool-card-wide:hover {
+      background: rgba(0, 0, 0, 0.06);
     }
 
     .tool-card-wide.active {
@@ -271,6 +393,10 @@
       margin: 0;
       font-size: 14px;
       font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: center;
     }
 
     .tool-card-wide p {
@@ -280,6 +406,33 @@
       line-height: 1.4;
     }
 
+    .favorite-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: transparent;
+      color: #888;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      padding: 0;
+    }
+
+    .favorite-btn:hover {
+      transform: scale(1.2);
+    }
+
+    .favorite-btn.active {
+      color: #ff6b6b;
+    }
+
+    .tool-card-wide {
+      position: relative;
+    }
+
     /* 注目のデモ (フルサイズ) */
     .featured-full {
       margin-top: 0;
@@ -287,8 +440,13 @@
       overflow: hidden;
       border: 1px solid rgba(255, 255, 255, 0.10);
       background: #111;
-      height: calc(100vh - 320px);
+      height: calc(100vh - 380px);
       min-height: 500px;
+    }
+
+    [data-theme="light"] .featured-full {
+      border: 1px solid rgba(0, 0, 0, 0.10);
+      background: #faf6ed;
     }
 
     .featured-full iframe {
@@ -343,6 +501,7 @@
     }
 
     @media (max-width: 768px) {
+      .favorites-grid,
       .tools-wide {
         grid-template-columns: repeat(3, 1fr);
       }
@@ -353,16 +512,23 @@
       .card { padding: 1.25rem; }
       .nav { gap: 0.5rem; }
       .nav a { font-size: 0.85rem; padding: 0.5rem 0.75rem; }
+      .favorites-grid,
       .tools-wide {
         grid-template-columns: repeat(2, 1fr);
       }
       .weather-details-wide {
         grid-template-columns: 1fr 1fr;
       }
-      .featured-full { height: calc(100vh - 380px); min-height: 400px; }
+      .featured-full { height: calc(100vh - 480px); min-height: 400px; }
       .topbar { flex-direction: column; gap: 0.75rem; }
       .btn { width: 100%; }
       .weather-selector select { width: 100%; }
+      .theme-toggle {
+        bottom: 1rem;
+        right: 1rem;
+        width: 44px;
+        height: 44px;
+      }
     }
   </style>
 </head>
@@ -383,13 +549,14 @@
     </nav>
 
     <main class="shell">
-      <!-- 横長の天気枠（全部の情報表示） -->
+      <!-- 横長の天気枠（自動現在地初期表示） -->
       <section class="card">
         <div class="weather-wide">
           <h2>🌤️ 全国の天気</h2>
           
           <div class="weather-selector">
             <select id="city-select">
+              <option value="current">📍 自分の現在地</option>
               <option value="tokyo">東京</option>
               <option value="osaka">大阪</option>
               <option value="nagoya">名古屋</option>
@@ -403,7 +570,6 @@
               <option value="yokohama">横浜</option>
               <option value="chiba">千葉</option>
               <option value="saitama">埼玉</option>
-              <option value="current">📍 自分の現在地</option>
             </select>
           </div>
           
@@ -415,34 +581,52 @@
         </div>
       </section>
 
+      <!-- お気に入りセクション -->
+      <section class="card">
+        <div id="favorites-section" class="favorites-section">
+          <div class="favorites-title">
+            <span>❤️ お気に入りツール</span>
+            <button class="btn" id="clearFavoritesBtn" style="min-height:2rem;padding:0 1rem;font-size:12px;">すべて削除</button>
+          </div>
+          <div class="favorites-grid" id="favoritesGrid">
+            <!-- お気に入りカードがここに追加 -->
+          </div>
+        </div>
+      </section>
+
       <!-- 横長のツールカード -->
       <section class="card">
         <div class="section-title">🛠 Other Tools</div>
-        <p class="section-copy">CodePen で作成したツール。カードをクリックすると下のデモ欄に表示されます。</p>
+        <p class="section-copy">CodePen で作成したツール。❤️ で 좋아하는ツールをお気に入りに保存できます。</p>
 
         <div class="tools-wide">
           <div class="tool-card-wide active" data-src="https://codepen.io/s71bal/full/MYbGJbM">
-            <h3>Color Palette</h3>
-            <p>インタラクティブなカラーパレットジェネレーター</p>
+            <button class="favorite-btn" data-src="https://codepen.io/s71bal/full/MYbGJbM">❤️</button>
+            <h3>🎨 Color Palette</h3>
+            <p>インタラクティブなカラーパレット</p>
           </div>
 
           <div class="tool-card-wide" data-src="https://codepen.io/s71bal/full/bNBMwbP">
-            <h3>Demo 2</h3>
+            <button class="favorite-btn" data-src="https://codepen.io/s71bal/full/bNBMwbP">❤️</button>
+            <h3>✨ Demo 2</h3>
             <p>CodePen デモ 2</p>
           </div>
 
           <div class="tool-card-wide" data-src="https://codepen.io/s71bal/full/MYbGKoJ">
-            <h3>Demo 3</h3>
+            <button class="favorite-btn" data-src="https://codepen.io/s71bal/full/MYbGKoJ">❤️</button>
+            <h3>🌈 Demo 3</h3>
             <p>CodePen デモ 3</p>
           </div>
 
           <div class="tool-card-wide" data-src="https://codepen.io/s71bal/full/azBGvBd">
-            <h3>Demo 4</h3>
+            <button class="favorite-btn" data-src="https://codepen.io/s71bal/full/azBGvBd">❤️</button>
+            <h3>🔥 Demo 4</h3>
             <p>CodePen デモ 4</p>
           </div>
 
           <div class="tool-card-wide" data-src="https://codepen.io/s71bal/full/xbRjGXo">
-            <h3>Demo 5</h3>
+            <button class="favorite-btn" data-src="https://codepen.io/s71bal/full/xbRjGXo">❤️</button>
+            <h3>💫 Demo 5</h3>
             <p>CodePen デモ 5</p>
           </div>
         </div>
@@ -475,9 +659,136 @@
     <div class="footer">minto. / Tools Playground</div>
   </div>
 
+  <!-- ダーク/ライトモード切り替えボタン -->
+  <button class="theme-toggle" id="themeToggle" title="テーマ切り替え">
+    🌙
+  </button>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // ========== 天気（横長・全部の情報） ==========
+      // ========== ダーク/ライトモード切り替え ==========
+      const themeToggle = document.getElementById('themeToggle');
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeIcon(savedTheme);
+
+      themeToggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcon(newTheme);
+      });
+
+      function updateThemeIcon(theme) {
+        themeToggle.textContent = theme === 'dark' ? '🌙' : '☀️';
+        themeToggle.title = theme === 'dark' ? 'ライトモード' : 'ダークモード';
+      }
+
+      // ========== お気に入り機能 ==========
+      const favoritesSection = document.getElementById('favorites-section');
+      const favoritesGrid = document.getElementById('favoritesGrid');
+      const clearFavoritesBtn = document.getElementById('clearFavoritesBtn');
+      const favoriteBtns = document.querySelectorAll('.favorite-btn');
+      const toolCards = document.querySelectorAll('.tool-card-wide');
+      
+      let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+
+      function updateFavorites() {
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+        
+        if (favorites.length > 0) {
+          favoritesSection.classList.add('active');
+          renderFavorites();
+        } else {
+          favoritesSection.classList.remove('active');
+        }
+      }
+
+      function renderFavorites() {
+        favoritesGrid.innerHTML = '';
+        
+        favorites.forEach(src => {
+          const toolCard = document.querySelector(`.tool-card-wide[data-src="${src}"]`);
+          if (toolCard) {
+            const favoriteCard = toolCard.cloneNode(true);
+            favoriteCard.classList.add('favorite-card');
+            favoritesGrid.appendChild(favoriteCard);
+          }
+        });
+
+        // お気に入りカードのクリックイベント
+        favoritesGrid.querySelectorAll('.tool-card-wide').forEach(card => {
+          const src = card.getAttribute('data-src');
+          card.addEventListener('click', (e) => {
+            if (!e.target.classList.contains('favorite-btn')) {
+              selectTool(src);
+            }
+          });
+
+          const btn = card.querySelector('.favorite-btn');
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            removeFromFavorites(src);
+          });
+
+          // お気に入りボタン状態
+          const btnElement = card.querySelector('.favorite-btn');
+          if (btnElement) {
+            btnElement.classList.add('active');
+          }
+        });
+      }
+
+      function addToFavorites(src) {
+        if (!favorites.includes(src)) {
+          favorites.push(src);
+          updateFavorites();
+        }
+      }
+
+      function removeFromFavorites(src) {
+        favorites = favorites.filter(f => f !== src);
+        updateFavorites();
+        
+        // カードのボタン状態更新
+        const card = document.querySelector(`.tool-card-wide[data-src="${src}"]`);
+        if (card) {
+          const btn = card.querySelector('.favorite-btn');
+          if (btn) btn.classList.remove('active');
+        }
+      }
+
+      function clearAllFavorites() {
+        favorites = [];
+        updateFavorites();
+      }
+
+      // お気に入りボタンクリックイベント
+      favoriteBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const src = btn.getAttribute('data-src');
+          
+          if (favorites.includes(src)) {
+            removeFromFavorites(src);
+            btn.classList.remove('active');
+          } else {
+            addToFavorites(src);
+            btn.classList.add('active');
+          }
+        });
+      });
+
+      // お気に入りすべて削除
+      clearFavoritesBtn.addEventListener('click', clearAllFavorites);
+
+      // 初期状態更新
+      updateFavorites();
+
+      // ========== 天気（自動現在地初期表示） ==========
       const apiKey = 'e850556215e5cf0214c8333b3bbc436e';
       const cities = {
         tokyo: { lat: 35.6895, lon: 139.6917, name: '東京' },
@@ -547,6 +858,26 @@
           });
       }
 
+      // ページ開いたら automatic現在地取得
+      if (navigator.geolocation) {
+        setWeatherLoading('現在地を取得...');
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            getWeather(position.coords.latitude, position.coords.longitude, 'あなたの現在地');
+          },
+          () => {
+            // 現在地取得失敗→東京表示
+            setWeatherLoading('現在地取得 NG→東京表示');
+            document.getElementById('city-select').value = 'tokyo';
+            getWeather(cities.tokyo.lat, cities.tokyo.lon, cities.tokyo.name);
+          }
+        );
+      } else {
+        setWeatherLoading('位置情報 NG→東京表示');
+        document.getElementById('city-select').value = 'tokyo';
+        getWeather(cities.tokyo.lat, cities.tokyo.lon, cities.tokyo.name);
+      }
+
       document.getElementById('city-select').addEventListener('change', function () {
         const selectedCity = this.value;
         if (selectedCity === 'current') {
@@ -567,7 +898,6 @@
       });
 
       // ========== ツールカードクリックで iframe 表示変更 ==========
-      const toolCards = document.querySelectorAll('.tool-card-wide');
       const featuredIframe = document.getElementById('featuredIframe');
       const openInCodePen = document.getElementById('openInCodePen');
 
@@ -577,17 +907,27 @@
         
         toolCards.forEach(card => card.classList.remove('active'));
         document.querySelector(`.tool-card-wide[data-src="${src}"]`)?.classList.add('active');
+        
+        // お気に入りセクションも更新
+        favoritesGrid.querySelectorAll('.tool-card-wide').forEach(card => {
+          card.classList.remove('active');
+        });
+        favoritesGrid.querySelector(`.tool-card-wide[data-src="${src}"]`)?.classList.add('active');
       }
 
       toolCards.forEach(card => {
         const src = card.getAttribute('data-src');
         if (src) {
-          card.addEventListener('click', () => selectTool(src));
+          card.addEventListener('click', (e) => {
+            if (!e.target.classList.contains('favorite-btn')) {
+              selectTool(src);
+            }
+          });
         }
       });
 
       // 初期表示
-      getWeather(cities.tokyo.lat, cities.tokyo.lon, cities.tokyo.name);
+      selectTool('https://codepen.io/s71bal/full/MYbGJbM');
     });
   </script>
 </body>

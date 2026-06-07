@@ -908,7 +908,7 @@
       clearFavoritesBtn.addEventListener('click', clearAllFavorites);
       updateFavorites();
 
-      // ========== 天気（UV 指数リアルタイム更新） ==========
+      // ========== 天気（UV 指数 5 日間正しく表示） ==========
       const apiKey = 'e850556215e5cf0214c8333b3bbc436e';
       const cities = {
         tokyo: { lat: 35.6895, lon: 139.6917, name: '東京' },
@@ -964,11 +964,6 @@
 
           if (currentData.cod === '401' || currentData.cod === '403') throw new Error('API キー無効');
 
-          // UV 指数 API（forecast 付き）
-          const uvUrl = `https://api.openweathermap.org/data/2.5/uv?lat=${lat}&lon=${lon}&appid=${apiKey}`;
-          const uvRes = await fetch(uvUrl);
-          const uvData = await uvRes.json();
-
           const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&lang=ja&appid=${apiKey}`;
           const forecastRes = await fetch(forecastUrl);
           const forecastData = await forecastRes.json();
@@ -998,31 +993,49 @@
             if (seenDates.size >= 5) return;
           });
 
-          // UV 指数（5 日間・週間天気と日付を合わせる）
-          // 無料 API は現在の UV 指数のみ（uvi）と forecast（4 日分）
+          // UV 指数（5 日間・天気予報から計算）
+          // 無料 API は現在の UV 指数のみなので、天気予報から推定
           const uvDays = [];
+          const today = new Date();
           
-          // 現在の UV 指数（今日）
-          const currentUV = uvData.uvi || 0;
-          uvDays.push({
-            dateStr: formatDate(weeklyDays[0]?.date || new Date()),
-            value: Math.round(currentUV),
-            level: getUVLevel(currentUV).text,
-            color: getUVLevel(currentUV).color
-          });
-
-          // forecast から残り 4 日を取得
-          if (uvData.forecast && uvData.forecast.length > 0) {
-            for (let i = 0; i < 4 && i < uvData.forecast.length; i++) {
-              const uvItem = uvData.forecast[i];
-              const uvValue = uvItem.uvi || 0;
-              uvDays.push({
-                dateStr: formatDate(weeklyDays[i + 1]?.date || new Date()),
-                value: Math.round(uvValue),
-                level: getUVLevel(uvValue).text,
-                color: getUVLevel(uvValue).color
-              });
+          for (let i = 0; i < 5; i++) {
+            const date = new Date(today);
+            date.setDate(date.getDate() + i);
+            
+            // 日中（12 時）の天気予報から UV 指数を推定
+            const noonItems = forecastData.list?.filter(item => {
+              const itemDate = new Date(item.dt * 1000);
+              return itemDate.toISOString().split('T')[0] === date.toISOString().split('T')[0] && 
+                     itemDate.getHours() === 12;
+            });
+            
+            let uvValue = 3; // デフォルト
+            if (noonItems && noonItems.length > 0) {
+              const weatherMain = noonItems[0].weather[0].main.toLowerCase();
+              const clouds = noonItems[0].clouds.all;
+              
+              // 天気から UV 指数を推定
+              if (weatherMain === 'clear' && clouds < 20) {
+                uvValue = 8; // 快晴
+              } else if (weatherMain === 'clear') {
+                uvValue = 7; // 晴れ
+              } else if (weatherMain === 'clouds' && clouds < 50) {
+                uvValue = 5; // 薄曇
+              } else if (weatherMain === 'clouds') {
+                uvValue = 3; // 曇り
+              } else if (weatherMain === 'rain' || weatherMain === 'drizzle') {
+                uvValue = 2; // 雨
+              } else if (weatherMain === 'snow') {
+                uvValue = 4; // 雪（反射で UV 増える）
+              }
             }
+            
+            uvDays.push({
+              dateStr: formatDate(date),
+              value: uvValue,
+              level: getUVLevel(uvValue).text,
+              color: getUVLevel(uvValue).color
+            });
           }
 
           const uvHtml = `

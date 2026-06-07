@@ -321,7 +321,6 @@
       font-weight: 600;
     }
 
-    /* UV 指数セクション（当日のみ） */
     .uv-section {
       margin-bottom: 20px;
     }
@@ -335,44 +334,49 @@
       gap: 8px;
     }
 
-    .uv-card {
-      display: inline-flex;
-      align-items: center;
-      gap: 15px;
-      padding: 15px 25px;
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 10px;
+    .uv-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
     }
 
-    [data-theme="light"] .uv-card {
+    .uv-day {
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    [data-theme="light"] .uv-day {
       background: rgba(0, 0, 0, 0.03);
     }
 
-    .uv-icon {
-      font-size: 36px;
+    .uv-day-name {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 6px;
     }
 
-    .uv-info {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .uv-value-large {
-      font-size: 32px;
-      font-weight: 700;
-    }
-
-    .uv-level-text {
-      font-size: 14px;
-      color: #aaa;
-    }
-
-    [data-theme="light"] .uv-level-text {
+    [data-theme="light"] .uv-day-name {
       color: #8a8278;
     }
 
-    /* 週間天気セクション（7 日間） */
+    .uv-value {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .uv-level {
+      font-size: 11px;
+      color: #aaa;
+    }
+
+    [data-theme="light"] .uv-day-name,
+    [data-theme="light"] .uv-level {
+      color: #8a8278;
+    }
+
     .weekly-section {
       overflow-x: auto;
       padding-bottom: 10px;
@@ -389,7 +393,7 @@
 
     .weekly-grid {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 8px;
     }
 
@@ -632,8 +636,9 @@
       .weather-details-grid {
         grid-template-columns: repeat(2, 1fr);
       }
+      .uv-grid,
       .weekly-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
       }
     }
 
@@ -649,6 +654,7 @@
       .weather-details-grid {
         grid-template-columns: 1fr;
       }
+      .uv-grid,
       .weekly-grid {
         grid-template-columns: repeat(2, 1fr);
       }
@@ -669,11 +675,6 @@
       .weekly-icon {
         width: 32px;
         height: 32px;
-      }
-      .uv-card {
-        flex-direction: column;
-        gap: 8px;
-        padding: 12px 20px;
       }
       .featured-full { height: calc(100vh - 520px); min-height: 400px; }
       .topbar { flex-direction: column; gap: 0.75rem; }
@@ -705,7 +706,6 @@
     </nav>
 
     <main class="shell">
-      <!-- 天気枠 -->
       <section class="card">
         <div class="weather-wide">
           <h2>🌤️ 全国の天気</h2>
@@ -737,7 +737,6 @@
         </div>
       </section>
 
-      <!-- お気に入りセクション -->
       <section class="card">
         <div id="favorites-section" class="favorites-section">
           <div class="favorites-title">
@@ -748,7 +747,6 @@
         </div>
       </section>
 
-      <!-- ツールカード -->
       <section class="card">
         <div class="section-title">Other Tools</div>
         <p class="section-copy">CodePen で作成したツール。を好きなツールをお気に入りに保存できます。</p>
@@ -786,7 +784,6 @@
         </div>
       </section>
 
-      <!-- 注目のデモ -->
       <section class="card">
         <div class="featured-header">
           <h2>Featured Demo</h2>
@@ -817,7 +814,6 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // ========== テーマ切り替え ==========
       const themeToggle = document.getElementById('themeToggle');
       const savedTheme = localStorage.getItem('theme') || 'dark';
       
@@ -836,7 +832,6 @@
         themeToggle.textContent = theme === 'dark' ? '🌙' : '☀️';
       }
 
-      // ========== お気に入り機能 ==========
       const favoritesSection = document.getElementById('favorites-section');
       const favoritesGrid = document.getElementById('favoritesGrid');
       const clearFavoritesBtn = document.getElementById('clearFavoritesBtn');
@@ -913,7 +908,7 @@
       clearFavoritesBtn.addEventListener('click', clearAllFavorites);
       updateFavorites();
 
-      // ========== 天気（UV 指数当日のみ＋週間 7 日間） ==========
+      // ========== 天気（UV 指数 5 日間＋週間天気 5 日間） ==========
       const apiKey = 'e850556215e5cf0214c8333b3bbc436e';
       const cities = {
         tokyo: { lat: 35.6895, lon: 139.6917, name: '東京' },
@@ -980,35 +975,47 @@
           const iconUrl = `https://openweathermap.org/img/wn/${currentData.weather[0].icon}@4x.png`;
           const windDir = getWindDirection(currentData.wind.deg);
 
-          // UV 指数（当日のみ）
-          const uvValue = uvData.uvi || 0;
-          const uvLevel = getUVLevel(uvValue);
-          const today = new Date();
+          // UV 指数（5 日間）
+          const uvDays = [];
+          for (let i = 0; i < 5; i++) {
+            const uvIndex = uvData.data?.[i] || uvData;
+            const uvValue = uvIndex.uvi || 0;
+            const uvLevel = getUVLevel(uvValue);
+            const date = new Date();
+            date.setDate(date.getDate() + i);
+            uvDays.push({
+              date: formatDate(date),
+              value: Math.round(uvValue),
+              level: uvLevel.text,
+              color: uvLevel.color
+            });
+          }
+
           const uvHtml = `
             <div class="uv-section">
               <div class="uv-title">
-                <span>☀️ UV 指数（今日）</span>
+                <span>☀️ UV 指数（5 日間）</span>
               </div>
-              <div class="uv-card">
-                <div class="uv-icon">☀️</div>
-                <div class="uv-info">
-                  <div class="uv-value-large" style="color:${uvLevel.color}">${Math.round(uvValue)}</div>
-                  <div class="uv-level-text">${uvLevel.text}</div>
-                </div>
+              <div class="uv-grid">
+                ${uvDays.map(day => `
+                  <div class="uv-day">
+                    <div class="uv-day-name">${day.date}</div>
+                    <div class="uv-value" style="color:${day.color}">${day.value}</div>
+                    <div class="uv-level">${day.level}</div>
+                  </div>
+                `).join('')}
               </div>
             </div>
           `;
 
-          // 週間天気（7 日間、土日も含める）
+          // 週間天気（5 日間）
           const weeklyDays = [];
           const seenDates = new Set();
-          const todayStr = today.toISOString().split('T')[0];
           
           forecastData.list?.forEach(item => {
             const date = new Date(item.dt * 1000);
             const dateStr = date.toISOString().split('T')[0];
             
-            // 毎日の 12 時のデータだけを取る（7 日分）
             if (date.getHours() === 12 && !seenDates.has(dateStr)) {
               seenDates.add(dateStr);
               const iconSmall = `https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`;
@@ -1020,7 +1027,7 @@
               });
             }
 
-            if (seenDates.size >= 7) return;
+            if (seenDates.size >= 5) return;
           });
 
           let weeklyHtml = '';
@@ -1028,7 +1035,7 @@
             weeklyHtml = `
               <div class="weekly-section">
                 <div class="weekly-title">
-                  <span>📅 週間天気（7 日間）</span>
+                  <span>📅 週間天気（5 日間）</span>
                 </div>
                 <div class="weekly-grid">
                   ${weeklyDays.map(day => `
@@ -1135,7 +1142,6 @@
         }
       });
 
-      // ========== ツール切り替え ==========
       const featuredIframe = document.getElementById('featuredIframe');
       const openInCodePen = document.getElementById('openInCodePen');
 

@@ -520,6 +520,37 @@ h1 {
   max-width: 62ch;
 }
 
+/* Scroll to Top Button */
+.scroll-to-top {
+  position: fixed;
+  left: 1.5rem;
+  bottom: 1.5rem;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #f7fbf8;
+  border: none;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px color-mix(in oklab, var(--primary) 32%, transparent);
+  transition: all 240ms cubic-bezier(0.16,1,0.3,1);
+  z-index: 999;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.scroll-to-top:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px color-mix(in oklab, var(--primary) 40%, transparent);
+}
+
+.scroll-to-top.show {
+  display: flex;
+}
+
 @media (max-width: 900px) {
   .hero,
   .grid-gallery,
@@ -563,6 +594,14 @@ h1 {
 
   h1 {
     font-size: clamp(2.2rem, 11vw, 3.6rem);
+  }
+
+  .scroll-to-top {
+    left: 1rem;
+    bottom: 1rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1rem;
   }
 }
   </style>
@@ -655,7 +694,7 @@ h1 {
         <div class="section-head"><div><h2 class="section-title">About</h2><p class="section-copy">minto.の作風や活動の紹介文です。</p></div></div>
         <div class="hero" style="grid-template-columns:1fr 1fr; margin:0;">
           <div class="hero-side card">
-            <p>minto.は、動物の表情や体温、しぐさに宿る物語を丁寧に描く作家です。絵と文章のあいだを行き来しながら、静けさのなかに残る余韻を作品にしています。</p>
+            <p>minto.は、動物の表情や体温、しぐさに宿る物語を丁寧に描く作家です。絵と文章のあいだを行き来しながら、静けさのなかに残る余韻を表現しています。</p>
             <div class="mini-list">
               <div class="mini-item"><strong>Works</strong>猫、犬、鳥、小さな生きものたちを主題にした作品を紹介します。</div>
               <div class="mini-item"><strong>News</strong>展示、掲載、更新情報を小さくまとめます。</div>
@@ -688,18 +727,44 @@ h1 {
         <div class="contact-row">
           <a class="contact-link" href="mailto:s71bal3@gmail.com">Email</a>
           <a class="contact-link" href="https://note.com/minto905/">note</a>
-          <a class="contact-link" href="https://x.com/minto905">X / </a>
+          <a class="contact-link" href="https://x.com/minto905">X / Twitter</a>
         </div>
       </section>
     </main>
 
     <footer class="page-footer">動物を主題にした作品を静かに見せるためのギャラリートップです。</footer>
   </div>
+
+  <!-- Scroll to Top Button -->
+  <button class="scroll-to-top" id="scrollToTopBtn" aria-label="ページトップへ">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
+
   <script>
     const root = document.documentElement, themeToggle = document.getElementById('themeToggle');
     let theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     root.setAttribute('data-theme', theme);
     themeToggle.addEventListener('click', () => { theme = theme === 'dark' ? 'light' : 'dark'; root.setAttribute('data-theme', theme); });
+
+    // Scroll to Top Button
+    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+    
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        scrollToTopBtn.classList.add('show');
+      } else {
+        scrollToTopBtn.classList.remove('show');
+      }
+    });
+
+    scrollToTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
   </script>
 </body>
 </html>

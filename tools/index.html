@@ -5,56 +5,431 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tools | minto.</title>
   <style>
-    :root{--bg:#0f1013;--card:rgba(24,26,31,.78);--border:rgba(255,255,255,.10);--text:#f5f1ea;--muted:#b7b0a6;--primary:#e2c79a;--shadow:0 18px 60px rgba(0,0,0,.38)}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,system-ui,sans-serif;background:radial-gradient(circle at top,rgba(226,199,154,.10),transparent 30%),linear-gradient(180deg,#12131a 0%,#0f1013 100%);color:var(--text);min-height:100vh}
-    a{color:inherit;text-decoration:none}
-    .page{width:min(100% - 1rem,72rem);margin:0 auto;padding:1rem 0 3rem}
-    .topbar{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1rem}
-    .brand{font-weight:700;letter-spacing:.04em}
-    .nav{display:flex;gap:.75rem;flex-wrap:wrap;margin:1rem 0 1.25rem;padding:.85rem .9rem;border-radius:1.25rem;background:rgba(255,255,255,.03);border:1px solid var(--border);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
-    .nav a{padding:.55rem .9rem;border-radius:9999px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);font-weight:600}
-    .nav a:hover{background:rgba(226,199,154,.10);color:var(--primary)}
-    .shell{display:grid;grid-template-columns:1fr;gap:1rem}
-    .card{background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow);border-radius:1.6rem;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);padding:1.25rem}
-    .section-title{margin:0;font-size:1.25rem;letter-spacing:-.02em}
-    .section-copy{margin:.35rem 0 0;color:var(--muted);line-height:1.75}
-    .tools-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:1rem}
-    .tool-card{padding:1rem;border-radius:1.25rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
-    .tool-card h3{margin:0 0 .35rem;font-size:1.05rem}
-    .tool-card p{margin:0;color:var(--muted);font-size:.93rem;line-height:1.7}
-    .btn{display:inline-flex;align-items:center;justify-content:center;min-height:2.9rem;padding:0 1rem;border-radius:9999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);font-weight:600;cursor:pointer;transition:all .2s}
-    .btn:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.20)}
-    .btn-primary{background:linear-gradient(180deg,#ead2a8,#d7b47c);color:#1a140d;border:0}
-    .codepen-wrap{margin-top:1rem;border-radius:1.2rem;overflow:hidden;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03)}
-    iframe{display:block;width:100%;height:760px;border:0;background:#111}
-    .footer{margin-top:1rem;text-align:center;color:var(--muted);font-size:.8rem}
-    
-    /* Pomodoro Timer Styles */
-    .pomodoro-container{display:flex;flex-direction:column;align-items:center;gap:1.5rem;padding:2rem 1.5rem;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:1.25rem;margin-top:1rem}
-    .timer-display{display:flex;flex-direction:column;align-items:center;gap:.5rem}
-    .timer-value{font-size:3.5rem;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
-    .timer-label{color:var(--muted);font-size:.95rem;text-transform:uppercase;letter-spacing:.08em}
-    .timer-progress{width:100%;max-width:200px;height:3px;background:rgba(255,255,255,.08);border-radius:9999px;overflow:hidden}
-    .timer-progress-bar{height:100%;background:linear-gradient(90deg,#ead2a8,#d7b47c);border-radius:9999px;transition:width .1s linear}
-    .timer-controls{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
-    .timer-btn{padding:.75rem 1.5rem;border-radius:9999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--text);font-weight:600;cursor:pointer;transition:all .2s;font-size:.95rem}
-    .timer-btn:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.20)}
-    .timer-btn.active{background:linear-gradient(180deg,#ead2a8,#d7b47c);color:#1a140d;border:0}
-    .timer-options{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
-    .timer-option{padding:.5rem 1rem;border-radius:.75rem;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--text);font-weight:600;cursor:pointer;transition:all .2s;font-size:.9rem}
-    .timer-option:hover{background:rgba(255,255,255,.08)}
-    .timer-option.selected{background:linear-gradient(180deg,#ead2a8,#d7b47c);color:#1a140d;border:0}
-    
-    @media (max-width:900px){.tools-grid{grid-template-columns:1fr 1fr}iframe{height:640px}.timer-value{font-size:2.8rem}}
-    @media (max-width:640px){.tools-grid{grid-template-columns:1fr}.page{width:min(100% - .75rem,72rem)}.nav{gap:.5rem}.nav a{font-size:.88rem}.card{padding:1rem}iframe{height:560px}.timer-value{font-size:2.2rem}.timer-controls{flex-direction:column;width:100%}.timer-btn{width:100%}}
+    :root {
+      --bg: #0f1013;
+      --card: rgba(24, 26, 31, .78);
+      --border: rgba(255, 255, 255, .10);
+      --text: #f5f1ea;
+      --muted: #b7b0a6;
+      --primary: #e2c79a;
+      --shadow: 0 18px 60px rgba(0, 0, 0, .38);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      background: radial-gradient(circle at top, rgba(226, 199, 154, .10), transparent 30%), linear-gradient(180deg, #12131a 0%, #0f1013 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(100% - 1rem, 72rem);
+      margin: 0 auto;
+      padding: 1rem 0 3rem;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .brand {
+      font-weight: 700;
+      letter-spacing: .04em;
+      font-size: 1.1rem;
+    }
+
+    .nav {
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+      margin: 1rem 0 1.25rem;
+      padding: .85rem .9rem;
+      border-radius: 1.25rem;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .nav a {
+      padding: .55rem .9rem;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(255, 255, 255, .08);
+      font-weight: 600;
+      font-size: .95rem;
+      transition: all .2s;
+    }
+
+    .nav a:hover {
+      background: rgba(226, 199, 154, .10);
+      color: var(--primary);
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: 1.6rem;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      padding: 1.5rem;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 1.3rem;
+      letter-spacing: -.02em;
+      font-weight: 700;
+    }
+
+    .section-copy {
+      margin: .5rem 0 0;
+      color: var(--muted);
+      line-height: 1.75;
+      font-size: .95rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 2.75rem;
+      padding: 0 1.25rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      background: rgba(255, 255, 255, .04);
+      color: var(--text);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      font-size: .95rem;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, .08);
+      border-color: rgba(255, 255, 255, .20);
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #ead2a8, #d7b47c);
+      color: #1a140d;
+      border: 0;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(180deg, #f0ddb8, #e0bf88);
+    }
+
+    /* Pomodoro Timer Section */
+    .timer-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .pomodoro-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+      padding: 2.5rem 2rem;
+      background: linear-gradient(135deg, rgba(226, 199, 154, .05) 0%, rgba(255, 255, 255, .02) 100%);
+      border: 1px solid rgba(226, 199, 154, .15);
+      border-radius: 1.5rem;
+    }
+
+    .timer-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .timer-value {
+      font-size: 4rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -.02em;
+      background: linear-gradient(135deg, #ead2a8, #d7b47c);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .timer-label {
+      color: var(--muted);
+      font-size: .9rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 500;
+    }
+
+    .timer-progress {
+      width: 100%;
+      max-width: 240px;
+      height: 4px;
+      background: rgba(255, 255, 255, .08);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .timer-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #ead2a8, #d7b47c);
+      border-radius: 9999px;
+      transition: width .1s linear;
+      box-shadow: 0 0 12px rgba(226, 199, 154, .4);
+    }
+
+    .timer-options {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .timer-option {
+      padding: .6rem 1.2rem;
+      border-radius: .9rem;
+      border: 1px solid rgba(255, 255, 255, .12);
+      background: rgba(255, 255, 255, .04);
+      color: var(--text);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      font-size: .9rem;
+    }
+
+    .timer-option:hover {
+      background: rgba(255, 255, 255, .08);
+      border-color: rgba(255, 255, 255, .20);
+    }
+
+    .timer-option.selected {
+      background: linear-gradient(180deg, #ead2a8, #d7b47c);
+      color: #1a140d;
+      border: 0;
+      box-shadow: 0 4px 16px rgba(226, 199, 154, .3);
+    }
+
+    .timer-controls {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .timer-btn {
+      padding: .8rem 1.8rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      background: rgba(255, 255, 255, .04);
+      color: var(--text);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      font-size: .95rem;
+      flex: 1;
+      min-width: 100px;
+    }
+
+    .timer-btn:hover {
+      background: rgba(255, 255, 255, .08);
+      border-color: rgba(255, 255, 255, .20);
+    }
+
+    .timer-btn.active {
+      background: linear-gradient(180deg, #ead2a8, #d7b47c);
+      color: #1a140d;
+      border: 0;
+      box-shadow: 0 4px 16px rgba(226, 199, 154, .3);
+    }
+
+    /* Tools Grid Section */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .tool-card {
+      padding: 1.25rem;
+      border-radius: 1.25rem;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+      transition: all .2s;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+    }
+
+    .tool-card:hover {
+      background: rgba(255, 255, 255, .06);
+      border-color: rgba(226, 199, 154, .2);
+      transform: translateY(-2px);
+    }
+
+    .tool-card h3 {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .tool-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .92rem;
+      line-height: 1.6;
+      flex-grow: 1;
+    }
+
+    .tool-card .btn {
+      margin-top: auto;
+      min-height: 2.5rem;
+      font-size: .9rem;
+    }
+
+    /* CodePen Section */
+    .codepen-section {
+      margin-top: 1.5rem;
+    }
+
+    .codepen-wrap {
+      margin-top: 1.5rem;
+      border-radius: 1.2rem;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, .10);
+      background: rgba(255, 255, 255, .03);
+      aspect-ratio: 16 / 9;
+    }
+
+    iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #111;
+    }
+
+    .codepen-actions {
+      margin-top: 1.5rem;
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
+
+    .footer {
+      margin-top: 2.5rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: .85rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 900px) {
+      .tools-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .timer-value {
+        font-size: 3rem;
+      }
+
+      .codepen-wrap {
+        aspect-ratio: 16 / 10;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        width: min(100% - .75rem, 72rem);
+      }
+
+      .card {
+        padding: 1.25rem;
+      }
+
+      .tools-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav {
+        gap: .5rem;
+      }
+
+      .nav a {
+        font-size: .85rem;
+        padding: .5rem .75rem;
+      }
+
+      .section-title {
+        font-size: 1.1rem;
+      }
+
+      .timer-value {
+        font-size: 2.5rem;
+      }
+
+      .pomodoro-container {
+        padding: 1.5rem 1.25rem;
+        gap: 1.5rem;
+      }
+
+      .timer-controls {
+        flex-direction: column;
+      }
+
+      .timer-btn {
+        width: 100%;
+      }
+
+      .codepen-wrap {
+        aspect-ratio: 16 / 12;
+      }
+
+      .topbar {
+        flex-direction: column;
+        gap: .75rem;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
   </style>
 </head>
+
 <body>
   <div class="page">
     <header class="topbar">
       <div class="brand">minto. tools</div>
-      <a class="btn" href="/minto/index.html">Back to Home</a>
+      <a class="btn" href="/minto/index.html">← Back to Home</a>
     </header>
 
     <nav class="nav" aria-label="site nav">
@@ -66,10 +441,13 @@
     </nav>
 
     <main class="shell">
-      <section class="card">
-        <div class="section-title">Pomodoro Timer</div>
-        <p class="section-copy">シンプルで効果的な集中タイマー。仕事や勉強の生産性を高めましょう。</p>
-        
+      <!-- Pomodoro Timer Card -->
+      <section class="card timer-section">
+        <div>
+          <div class="section-title">⏱ Pomodoro Timer</div>
+          <p class="section-copy">シンプルで効果的な集中タイマー。仕事や勉強の生産性を高めましょう。</p>
+        </div>
+
         <div class="pomodoro-container">
           <div class="timer-display">
             <div class="timer-value" id="timerDisplay">25:00</div>
@@ -78,51 +456,77 @@
               <div class="timer-progress-bar" id="timerProgressBar"></div>
             </div>
           </div>
-          
+
           <div class="timer-options">
             <button class="timer-option selected" data-minutes="25">25 min</button>
             <button class="timer-option" data-minutes="5">5 min</button>
             <button class="timer-option" data-minutes="15">15 min</button>
             <button class="timer-option" data-minutes="10">10 min</button>
           </div>
-          
+
           <div class="timer-controls">
-            <button class="timer-btn" id="startBtn">Start</button>
-            <button class="timer-btn" id="pauseBtn">Pause</button>
-            <button class="timer-btn" id="resetBtn">Reset</button>
+            <button class="timer-btn" id="startBtn">▶ Start</button>
+            <button class="timer-btn" id="pauseBtn">⏸ Pause</button>
+            <button class="timer-btn" id="resetBtn">↻ Reset</button>
           </div>
         </div>
       </section>
 
+      <!-- Tools Grid Card -->
       <section class="card">
-        <div class="section-title">Tools</div>
-        <p class="section-copy">ここに、CodePenで作ったツールや実験的なUIをまとめて表示できます。</p>
+        <div class="section-title">🛠 Other Tools</div>
+        <p class="section-copy">CodePen で作成したツールや実験的な UI コンポーネント集。</p>
 
         <div class="tools-grid">
-          <div class="tool-card"><h3>CodePen Demo</h3><p>外部デモとしてCodePenを埋め込めます。</p><a class="btn" href="https://codepen.io/s71bal/full/MYbGJbM" target="_blank" rel="noopener noreferrer">Open</a></div>
-          <div class="tool-card"><h3>Coming Soon</h3><p>ここに今後のツールを追加できます。</p></div>
-          <div class="tool-card"><h3>Demo 2</h3><p>CodePenデモの追加枠です。</p><a class="btn" href="https://codepen.io/s71bal/full/bNBMwbP" target="_blank" rel="noopener noreferrer">Open</a></div>
-          <div class="tool-card"><h3>Demo 3</h3><p>CodePenデモの追加枠です。</p><a class="btn" href="https://codepen.io/s71bal/full/MYbGKoJ" target="_blank" rel="noopener noreferrer">Open</a></div>
-          <div class="tool-card"><h3>Demo 4</h3><p>CodePenデモの追加枠です。</p><a class="btn" href="https://codepen.io/s71bal/full/azBGvBd" target="_blank" rel="noopener noreferrer">Open</a></div>
-          <div class="tool-card"><h3>Demo 5</h3><p>CodePenデモの追加枠です。</p><a class="btn" href="https://codepen.io/s71bal/full/xbRjGXo" target="_blank" rel="noopener noreferrer">Open</a></div>
-          <div class="tool-card"><h3>Demo 6</h3><p>CodePenデモの追加枠です。</p><a class="btn" href="https://codepen.io/s71bal/full/KwNorwJ" target="_blank" rel="noopener noreferrer">Open</a></div>
-          <div class="tool-card"><h3>Demo 7</h3><p>CodePenデモの追加枠です。</p><a class="btn" href="https://codepen.io/s71bal/full/zxoWJKP" target="_blank" rel="noopener noreferrer">Open</a></div>
+          <div class="tool-card">
+            <h3>Color Palette</h3>
+            <p>インタラクティブなカラーパレットジェネレーター。</p>
+            <a class="btn" href="https://codepen.io/s71bal/full/MYbGJbM" target="_blank" rel="noopener noreferrer">Open</a>
+          </div>
+          <div class="tool-card">
+            <h3>Demo 2</h3>
+            <p>CodePen デモの追加枠です。</p>
+            <a class="btn" href="https://codepen.io/s71bal/full/bNBMwbP" target="_blank" rel="noopener noreferrer">Open</a>
+          </div>
+          <div class="tool-card">
+            <h3>Demo 3</h3>
+            <p>CodePen デモの追加枠です。</p>
+            <a class="btn" href="https://codepen.io/s71bal/full/MYbGKoJ" target="_blank" rel="noopener noreferrer">Open</a>
+          </div>
+          <div class="tool-card">
+            <h3>Demo 4</h3>
+            <p>CodePen デモの追加枠です。</p>
+            <a class="btn" href="https://codepen.io/s71bal/full/azBGvBd" target="_blank" rel="noopener noreferrer">Open</a>
+          </div>
+          <div class="tool-card">
+            <h3>Demo 5</h3>
+            <p>CodePen デモの追加枠です。</p>
+            <a class="btn" href="https://codepen.io/s71bal/full/xbRjGXo" target="_blank" rel="noopener noreferrer">Open</a>
+          </div>
+          <div class="tool-card">
+            <h3>Coming Soon</h3>
+            <p>ここに今後のツールを追加できます。</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Featured CodePen Card -->
+      <section class="card codepen-section">
+        <div class="section-title">📺 Featured Demo</div>
+        <p class="section-copy">CodePen で作成したツールをそのまま表示しています。</p>
+
+        <div class="codepen-wrap">
+          <iframe src="https://codepen.io/s71bal/full/MYbGJbM" loading="lazy" allowfullscreen="true" title="CodePen Tool"></iframe>
         </div>
 
-        <section class="card" style="margin-top:1rem;padding:1rem;">
-          <h2 class="section-title">Featured CodePen</h2>
-          <p class="section-copy">CodePenで作成したツールをそのまま表示しています。</p>
-          <div class="codepen-wrap">
-            <iframe src="https://codepen.io/s71bal/full/MYbGJbM" loading="lazy" allowfullscreen="true" title="CodePen Tool"></iframe>
-          </div>
-          <div style="margin-top:1rem;display:flex;gap:.75rem;flex-wrap:wrap;">
-            <a class="btn btn-primary" href="https://codepen.io/s71bal/full/MYbGJbM" target="_blank" rel="noopener noreferrer">Open in CodePen</a>
-          </div>
-        </section>
+        <div class="codepen-actions">
+          <a class="btn btn-primary" href="https://codepen.io/s71bal/full/MYbGJbM" target="_blank" rel="noopener noreferrer">Open in CodePen</a>
+          <a class="btn" href="https://codepen.io/s71bal" target="_blank" rel="noopener noreferrer">View All on CodePen</a>
+        </div>
       </section>
     </main>
 
-    <div class="footer">minto. / Tools</div>
+    <div class="footer">minto. / Tools & Pomodoro Timer</div>
   </div>
 
   <script>
@@ -155,7 +559,7 @@
       if (isRunning) return;
       isRunning = true;
       startBtn.classList.add('active');
-      
+
       timerId = setInterval(() => {
         if (remainingSeconds > 0) {
           remainingSeconds--;
@@ -165,6 +569,7 @@
           isRunning = false;
           startBtn.classList.remove('active');
           playNotification();
+          document.title = '完了！ | minto.';
         }
       }, 1000);
     }
@@ -182,6 +587,7 @@
       remainingSeconds = totalSeconds;
       updateDisplay();
       startBtn.classList.remove('active');
+      document.title = 'Tools | minto.';
     }
 
     function setTimerDuration(minutes) {
@@ -192,19 +598,23 @@
     }
 
     function playNotification() {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.value = 800;
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.5);
+      try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.frequency.value = 800;
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.5);
+      } catch (e) {
+        console.log('Audio notification not available');
+      }
     }
 
     startBtn.addEventListener('click', startTimer);
@@ -223,4 +633,5 @@
     updateDisplay();
   </script>
 </body>
+
 </html>

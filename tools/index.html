@@ -908,7 +908,7 @@
       clearFavoritesBtn.addEventListener('click', clearAllFavorites);
       updateFavorites();
 
-      // ========== 天気（UV 指数＋週間天気 5 日間・日付一致） ==========
+      // ========== 天気（UV 指数リアルタイム更新） ==========
       const apiKey = 'e850556215e5cf0214c8333b3bbc436e';
       const cities = {
         tokyo: { lat: 35.6895, lon: 139.6917, name: '東京' },
@@ -964,6 +964,7 @@
 
           if (currentData.cod === '401' || currentData.cod === '403') throw new Error('API キー無効');
 
+          // UV 指数 API（forecast 付き）
           const uvUrl = `https://api.openweathermap.org/data/2.5/uv?lat=${lat}&lon=${lon}&appid=${apiKey}`;
           const uvRes = await fetch(uvUrl);
           const uvData = await uvRes.json();
@@ -998,24 +999,28 @@
           });
 
           // UV 指数（5 日間・週間天気と日付を合わせる）
+          // 無料 API は現在の UV 指数のみ（uvi）と forecast（4 日分）
           const uvDays = [];
-          for (let i = 0; i < 5; i++) {
-            if (i < uvData.data?.length) {
-              const uvIndex = uvData.data[i];
-              const uvValue = uvIndex.uvi || 0;
-              const uvLevel = getUVLevel(uvValue);
+          
+          // 現在の UV 指数（今日）
+          const currentUV = uvData.uvi || 0;
+          uvDays.push({
+            dateStr: formatDate(weeklyDays[0]?.date || new Date()),
+            value: Math.round(currentUV),
+            level: getUVLevel(currentUV).text,
+            color: getUVLevel(currentUV).color
+          });
+
+          // forecast から残り 4 日を取得
+          if (uvData.forecast && uvData.forecast.length > 0) {
+            for (let i = 0; i < 4 && i < uvData.forecast.length; i++) {
+              const uvItem = uvData.forecast[i];
+              const uvValue = uvItem.uvi || 0;
               uvDays.push({
-                dateStr: formatDate(weeklyDays[i]?.date || new Date()),
+                dateStr: formatDate(weeklyDays[i + 1]?.date || new Date()),
                 value: Math.round(uvValue),
-                level: uvLevel.text,
-                color: uvLevel.color
-              });
-            } else {
-              uvDays.push({
-                dateStr: formatDate(weeklyDays[i]?.date || new Date()),
-                value: 0,
-                level: '-',
-                color: '#888'
+                level: getUVLevel(uvValue).text,
+                color: getUVLevel(uvValue).color
               });
             }
           }

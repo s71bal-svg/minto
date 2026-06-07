@@ -1,4 +1,4 @@
-<!-- 天気表示セクション → 全国対応・ダークテーマ -->
+<!-- 天気表示セクション → 全国対応・プルダウン選択・ダークテーマ -->
 <style>
   .weather-container {
     background: #1a1a1a;
@@ -29,6 +29,7 @@
     font-size: 14px;
     border-radius: 5px;
     cursor: pointer;
+    width: 200px;
   }
   
   .city-selector select:focus {
@@ -186,7 +187,7 @@
       });
   }
   
-  // ドロップダウン選択イベント
+  // プルダウン選択イベント
   document.getElementById('city-select').addEventListener('change', function() {
     const selectedCity = this.value;
     
@@ -231,6 +232,8 @@
   // 初期表示（東京）
   getWeather(cities.tokyo.lat, cities.tokyo.lon, cities.tokyo.name);
 </script>
+
+
 
 <!DOCTYPE html>
 <html lang="ja">

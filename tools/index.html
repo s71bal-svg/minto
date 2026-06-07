@@ -210,7 +210,7 @@
       box-shadow: 0 0 20px rgba(226, 199, 154, 0.4);
     }
 
-    /* 広くなった天気枠 */
+    /* 天気枠 */
     .weather-wide {
       background: #1a1a1a;
       color: #fff;
@@ -291,6 +291,7 @@
       display: grid;
       grid-template-columns: repeat(6, 1fr);
       gap: 15px;
+      margin-bottom: 20px;
     }
 
     .weather-detail-item {
@@ -319,6 +320,127 @@
     .weather-detail-value {
       font-size: 16px;
       font-weight: 600;
+    }
+
+    /* UV指数セクション */
+    .uv-section {
+      margin-bottom: 20px;
+    }
+
+    .uv-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .uv-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .uv-day {
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    [data-theme="light"] .uv-day {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    .uv-day-name {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 6px;
+    }
+
+    [data-theme="light"] .uv-day-name {
+      color: #8a8278;
+    }
+
+    .uv-value {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .uv-level {
+      font-size: 11px;
+      color: #aaa;
+    }
+
+    [data-theme="light"] .uv-day-name,
+    [data-theme="light"] .uv-level {
+      color: #8a8278;
+    }
+
+    /* 週間天気セクション */
+    .weekly-section {
+      overflow-x: auto;
+      padding-bottom: 10px;
+    }
+
+    .weekly-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .weekly-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .weekly-day {
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      text-align: center;
+      min-width: 80px;
+    }
+
+    [data-theme="light"] .weekly-day {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    .weekly-date {
+      font-size: 11px;
+      color: #888;
+      margin-bottom: 6px;
+    }
+
+    [data-theme="light"] .weekly-date {
+      color: #8a8278;
+    }
+
+    .weekly-icon {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 6px;
+    }
+
+    .weekly-temp {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .weekly-desc {
+      font-size: 10px;
+      color: #aaa;
+    }
+
+    [data-theme="light"] .weekly-desc {
+      color: #8a8278;
     }
 
     .loading { opacity: 0.7; }
@@ -518,6 +640,12 @@
       .weather-details-grid {
         grid-template-columns: repeat(2, 1fr);
       }
+      .uv-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .weekly-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
     }
 
     @media (max-width: 640px) {
@@ -532,12 +660,29 @@
       .weather-details-grid {
         grid-template-columns: 1fr;
       }
+      .uv-grid {
+        grid-template-columns: 1fr;
+      }
+      .weekly-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
       .weather-main {
         flex-direction: column;
         gap: 10px;
       }
       .weather-temp-large {
         font-size: 36px;
+      }
+      .weekly-grid {
+        gap: 6px;
+      }
+      .weekly-day {
+        min-width: 70px;
+        padding: 8px;
+      }
+      .weekly-icon {
+        width: 32px;
+        height: 32px;
       }
       .featured-full { height: calc(100vh - 520px); min-height: 400px; }
       .topbar { flex-direction: column; gap: 0.75rem; }
@@ -569,7 +714,7 @@
     </nav>
 
     <main class="shell">
-      <!-- 広くなった天気枠（OpenWeatherMap 並みの情報量） -->
+      <!-- 天気枠（UV 指数＋週間天気追加） -->
       <section class="card">
         <div class="weather-wide">
           <h2>🌤️ 全国の天気</h2>
@@ -777,7 +922,7 @@
       clearFavoritesBtn.addEventListener('click', clearAllFavorites);
       updateFavorites();
 
-      // ========== 天気（OpenWeatherMap 並みの詳細情報） ==========
+      // ========== 天気（UV 指数＋週間天気追加） ==========
       const apiKey = 'e850556215e5cf0214c8333b3bbc436e';
       const cities = {
         tokyo: { lat: 35.6895, lon: 139.6917, name: '東京' },
@@ -795,79 +940,191 @@
         saitama: { lat: 35.8569, lon: 139.6506, name: '埼玉' }
       };
 
-      function setWeatherLoading(text) {
-        const weatherInfo = document.getElementById('weather-info-wide');
-        weatherInfo.classList.add('loading');
-        weatherInfo.innerHTML = `<span>${text}</span>`;
-      }
+      const weekDays = ['日', '月', '火', '水', '木', '金', '土'];
 
-      function getWeather(lat, lon, cityName = '') {
-        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=ja&appid=${apiKey}`;
-        const weatherInfo = document.getElementById('weather-info-wide');
-        setWeatherLoading('天気情報を取得しています...');
-
-        fetch(url)
-          .then(res => res.json())
-          .then(data => {
-            if (data.cod === '401' || data.cod === '403') throw new Error('API キー無効');
-            
-            const iconUrl = `https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`;
-            const windDir = getWindDirection(data.wind.deg);
-            
-            weatherInfo.classList.remove('loading');
-            weatherInfo.innerHTML = `
-              <div class="weather-main">
-                <img src="${iconUrl}" alt="天気" class="weather-icon-large">
-                <div>
-                  <div class="weather-temp-large">${Math.round(data.main.temp)}°C</div>
-                  <div class="weather-desc-large">${data.weather[0].description}</div>
-                </div>
-              </div>
-              <div class="weather-details-grid">
-                <div class="weather-detail-item">
-                  <span class="weather-detail-label">体感温度</span>
-                  <span class="weather-detail-value">${Math.round(data.main.feels_like)}°C</span>
-                </div>
-                <div class="weather-detail-item">
-                  <span class="weather-detail-label">湿度</span>
-                  <span class="weather-detail-value">${data.main.humidity}%</span>
-                </div>
-                <div class="weather-detail-item">
-                  <span class="weather-detail-label">気圧</span>
-                  <span class="weather-detail-value">${Math.round(data.main.pressure)}hPa</span>
-                </div>
-                <div class="weather-detail-item">
-                  <span class="weather-detail-label">風速</span>
-                  <span class="weather-detail-value">${data.wind.speed}m/s ${windDir}</span>
-                </div>
-                <div class="weather-detail-item">
-                  <span class="weather-detail-label">雲量</span>
-                  <span class="weather-detail-value">${data.clouds.all}%</span>
-                </div>
-                <div class="weather-detail-item">
-                  <span class="weather-detail-label">視界</span>
-                  <span class="weather-detail-value">${(data.visibility / 1000).toFixed(1)}km</span>
-                </div>
-              </div>
-            `;
-            document.getElementById('current-city-wide').textContent = cityName ? `📍 ${cityName}の天気` : '';
-          })
-          .catch(err => {
-            weatherInfo.classList.remove('loading');
-            weatherInfo.innerHTML = `
-              <div class="error-wide">
-                天気情報の取得に失敗しました<br>
-                ${err.message || 'API キーを設定してください'}
-              </div>
-            `;
-            document.getElementById('current-city-wide').textContent = '';
-          });
+      function getUVLevel(value) {
+        if (value <= 2) return { text: '低い', color: '#4caf50' };
+        if (value <= 5) return { text: '中程度の', color: '#ffc107' };
+        if (value <= 7) return { text: '高い', color: '#ff9800' };
+        if (value <= 10) return { text: '非常に高い', color: '#f44336' };
+        return { text: '危険', color: '#9c27b0' };
       }
 
       function getWindDirection(degrees) {
         const directions = ['北', '北東', '東', '南東', '南', '南西', '西', '北西'];
         const index = Math.round(degrees / 45) % 8;
         return directions[index];
+      }
+
+      function formatDate(date) {
+        const day = weekDays[date.getDay()];
+        return `${date.getMonth() + 1}/${date.getDate()}（${day}）`;
+      }
+
+      function setWeatherLoading(text) {
+        const weatherInfo = document.getElementById('weather-info-wide');
+        weatherInfo.classList.add('loading');
+        weatherInfo.innerHTML = `<span>${text}</span>`;
+      }
+
+      async function getWeather(lat, lon, cityName = '') {
+        const weatherInfo = document.getElementById('weather-info-wide');
+        setWeatherLoading('天気情報を取得しています...');
+
+        try {
+          // 現在天気
+          const currentUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=ja&appid=${apiKey}`;
+          const currentRes = await fetch(currentUrl);
+          const currentData = await currentRes.json();
+
+          if (currentData.cod === '401' || currentData.cod === '403') throw new Error('API キー無効');
+
+          // UV 指数（4 日分）
+          const uvUrl = `https://api.openweathermap.org/data/2.5/uv?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+          const uvRes = await fetch(uvUrl);
+          const uvData = await uvRes.json();
+
+          // 5 日間天気予報
+          const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&lang=ja&appid=${apiKey}`;
+          const forecastRes = await fetch(forecastUrl);
+          const forecastData = await forecastRes.json();
+
+          const iconUrl = `https://openweathermap.org/img/wn/${currentData.weather[0].icon}@4x.png`;
+          const windDir = getWindDirection(currentData.wind.deg);
+
+          // UV 指数データ（4 日分）
+          const uvDays = [];
+          for (let i = 0; i < 4; i++) {
+            const uvIndex = uvData.data?.[i] || uvData;
+            const uvValue = uvIndex.uvi || 0;
+            const uvLevel = getUVLevel(uvValue);
+            const date = new Date();
+            date.setDate(date.getDate() + i);
+            uvDays.push({
+              date: formatDate(date),
+              value: Math.round(uvValue),
+              level: uvLevel.text,
+              color: uvLevel.color
+            });
+          }
+
+          // 週間天気データ（7 日分、3 時間毎から毎日 12 時を取る）
+          const weeklyDays = [];
+          const seenDates = new Set();
+          
+          forecastData.list?.forEach(item => {
+            const date = new Date(item.dt * 1000);
+            const dateStr = date.toISOString().split('T')[0];
+            
+            // 毎日 12 時のデータだけを取る
+            if (date.getHours() === 12 && !seenDates.has(dateStr)) {
+              seenDates.add(dateStr);
+              const iconSmall = `https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`;
+              weeklyDays.push({
+                date: formatDate(date),
+                icon: iconSmall,
+                temp: Math.round(item.main.temp),
+                desc: item.weather[0].description
+              });
+            }
+
+            if (seenDates.size >= 7) return;
+          });
+
+          // 天気枠表示
+          weatherInfo.classList.remove('loading');
+          
+          let uvHtml = '';
+          if (uvDays.length > 0) {
+            uvHtml = `
+              <div class="uv-section">
+                <div class="uv-title">
+                  <span>☀️ UV 指数（4 日間）</span>
+                </div>
+                <div class="uv-grid">
+                  ${uvDays.map(day => `
+                    <div class="uv-day">
+                      <div class="uv-day-name">${day.date}</div>
+                      <div class="uv-value" style="color:${day.color}">${day.value}</div>
+                      <div class="uv-level">${day.level}</div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            `;
+          }
+
+          let weeklyHtml = '';
+          if (weeklyDays.length > 0) {
+            weeklyHtml = `
+              <div class="weekly-section">
+                <div class="weekly-title">
+                  <span>📅 週間天気（7 日間）</span>
+                </div>
+                <div class="weekly-grid">
+                  ${weeklyDays.map(day => `
+                    <div class="weekly-day">
+                      <div class="weekly-date">${day.date}</div>
+                      <img src="${day.icon}" alt="天気" class="weekly-icon">
+                      <div class="weekly-temp">${day.temp}°C</div>
+                      <div class="weekly-desc">${day.desc}</div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            `;
+          }
+
+          weatherInfo.innerHTML = `
+            <div class="weather-main">
+              <img src="${iconUrl}" alt="天気" class="weather-icon-large">
+              <div>
+                <div class="weather-temp-large">${Math.round(currentData.main.temp)}°C</div>
+                <div class="weather-desc-large">${currentData.weather[0].description}</div>
+              </div>
+            </div>
+            <div class="weather-details-grid">
+              <div class="weather-detail-item">
+                <span class="weather-detail-label">体感温度</span>
+                <span class="weather-detail-value">${Math.round(currentData.main.feels_like)}°C</span>
+              </div>
+              <div class="weather-detail-item">
+                <span class="weather-detail-label">湿度</span>
+                <span class="weather-detail-value">${currentData.main.humidity}%</span>
+              </div>
+              <div class="weather-detail-item">
+                <span class="weather-detail-label">気圧</span>
+                <span class="weather-detail-value">${Math.round(currentData.main.pressure)}hPa</span>
+              </div>
+              <div class="weather-detail-item">
+                <span class="weather-detail-label">風速</span>
+                <span class="weather-detail-value">${currentData.wind.speed}m/s ${windDir}</span>
+              </div>
+              <div class="weather-detail-item">
+                <span class="weather-detail-label">雲量</span>
+                <span class="weather-detail-value">${currentData.clouds.all}%</span>
+              </div>
+              <div class="weather-detail-item">
+                <span class="weather-detail-label">視界</span>
+                <span class="weather-detail-value">${(currentData.visibility / 1000).toFixed(1)}km</span>
+              </div>
+            </div>
+            ${uvHtml}
+            ${weeklyHtml}
+          `;
+
+          document.getElementById('current-city-wide').textContent = cityName ? `📍 ${cityName}の天気` : '';
+
+        } catch (err) {
+          weatherInfo.classList.remove('loading');
+          weatherInfo.innerHTML = `
+            <div class="error-wide">
+              天気情報の取得に失敗しました<br>
+              ${err.message || 'API キーを設定してください'}
+            </div>
+          `;
+          document.getElementById('current-city-wide').textContent = '';
+        }
       }
 
       // 自動現在地取得

@@ -336,12 +336,12 @@
 
     .uv-grid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
     }
 
     .uv-day {
-      padding: 10px;
+      padding: 8px;
       background: rgba(255, 255, 255, 0.03);
       border-radius: 8px;
       text-align: center;
@@ -352,9 +352,9 @@
     }
 
     .uv-day-name {
-      font-size: 12px;
+      font-size: 10px;
       color: #888;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     [data-theme="light"] .uv-day-name {
@@ -362,19 +362,23 @@
     }
 
     .uv-value {
-      font-size: 24px;
+      font-size: 20px;
       font-weight: 700;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
     .uv-level {
-      font-size: 11px;
+      font-size: 9px;
       color: #aaa;
     }
 
     [data-theme="light"] .uv-day-name,
     [data-theme="light"] .uv-level {
       color: #8a8278;
+    }
+
+    .uv-no-data {
+      opacity: 0.4;
     }
 
     .weekly-section {
@@ -393,16 +397,16 @@
 
     .weekly-grid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(7, 1fr);
       gap: 8px;
     }
 
     .weekly-day {
-      padding: 10px;
+      padding: 8px;
       background: rgba(255, 255, 255, 0.03);
       border-radius: 8px;
       text-align: center;
-      min-width: 80px;
+      min-width: 70px;
     }
 
     [data-theme="light"] .weekly-day {
@@ -410,9 +414,9 @@
     }
 
     .weekly-date {
-      font-size: 11px;
+      font-size: 10px;
       color: #888;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     [data-theme="light"] .weekly-date {
@@ -420,19 +424,19 @@
     }
 
     .weekly-icon {
-      width: 40px;
-      height: 40px;
-      margin-bottom: 6px;
+      width: 36px;
+      height: 36px;
+      margin-bottom: 4px;
     }
 
     .weekly-temp {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       margin-bottom: 2px;
     }
 
     .weekly-desc {
-      font-size: 10px;
+      font-size: 9px;
       color: #aaa;
     }
 
@@ -638,7 +642,7 @@
       }
       .uv-grid,
       .weekly-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
       }
     }
 
@@ -669,12 +673,22 @@
         gap: 6px;
       }
       .weekly-day {
-        min-width: 70px;
-        padding: 8px;
+        min-width: 65px;
+        padding: 6px;
       }
       .weekly-icon {
-        width: 32px;
-        height: 32px;
+        width: 30px;
+        height: 30px;
+      }
+      .uv-day-name,
+      .weekly-date {
+        font-size: 9px;
+      }
+      .uv-value {
+        font-size: 18px;
+      }
+      .weekly-temp {
+        font-size: 12px;
       }
       .featured-full { height: calc(100vh - 520px); min-height: 400px; }
       .topbar { flex-direction: column; gap: 0.75rem; }
@@ -908,7 +922,7 @@
       clearFavoritesBtn.addEventListener('click', clearAllFavorites);
       updateFavorites();
 
-      // ========== 天気（UV 指数 5 日間＋週間天気 5 日間） ==========
+      // ========== 天気（UV 指数＋週間天気 日付一致 7 日間） ==========
       const apiKey = 'e850556215e5cf0214c8333b3bbc436e';
       const cities = {
         tokyo: { lat: 35.6895, lon: 139.6917, name: '東京' },
@@ -975,40 +989,7 @@
           const iconUrl = `https://openweathermap.org/img/wn/${currentData.weather[0].icon}@4x.png`;
           const windDir = getWindDirection(currentData.wind.deg);
 
-          // UV 指数（5 日間）
-          const uvDays = [];
-          for (let i = 0; i < 5; i++) {
-            const uvIndex = uvData.data?.[i] || uvData;
-            const uvValue = uvIndex.uvi || 0;
-            const uvLevel = getUVLevel(uvValue);
-            const date = new Date();
-            date.setDate(date.getDate() + i);
-            uvDays.push({
-              date: formatDate(date),
-              value: Math.round(uvValue),
-              level: uvLevel.text,
-              color: uvLevel.color
-            });
-          }
-
-          const uvHtml = `
-            <div class="uv-section">
-              <div class="uv-title">
-                <span>☀️ UV 指数（5 日間）</span>
-              </div>
-              <div class="uv-grid">
-                ${uvDays.map(day => `
-                  <div class="uv-day">
-                    <div class="uv-day-name">${day.date}</div>
-                    <div class="uv-value" style="color:${day.color}">${day.value}</div>
-                    <div class="uv-level">${day.level}</div>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-          `;
-
-          // 週間天気（5 日間）
+          // 週間天気（7 日間）を先に取得
           const weeklyDays = [];
           const seenDates = new Set();
           
@@ -1018,29 +999,72 @@
             
             if (date.getHours() === 12 && !seenDates.has(dateStr)) {
               seenDates.add(dateStr);
-              const iconSmall = `https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`;
               weeklyDays.push({
-                date: formatDate(date),
-                icon: iconSmall,
+                date: date,
+                dateStr: formatDate(date),
+                icon: `https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`,
                 temp: Math.round(item.main.temp),
                 desc: item.weather[0].description
               });
             }
 
-            if (seenDates.size >= 5) return;
+            if (seenDates.size >= 7) return;
           });
+
+          // UV 指数（7 日間と日付を合わせる）
+          const uvDays = [];
+          for (let i = 0; i < 7; i++) {
+            if (i < uvData.data?.length) {
+              const uvIndex = uvData.data[i];
+              const uvValue = uvIndex.uvi || 0;
+              const uvLevel = getUVLevel(uvValue);
+              uvDays.push({
+                dateStr: formatDate(new Date(weeklyDays[i]?.date || new Date())),
+                value: Math.round(uvValue),
+                level: uvLevel.text,
+                color: uvLevel.color,
+                hasData: true
+              });
+            } else {
+              // 5 日目以降はデータなし
+              uvDays.push({
+                dateStr: formatDate(new Date(weeklyDays[i]?.date || new Date())),
+                value: null,
+                level: 'データなし',
+                color: '#888',
+                hasData: false
+              });
+            }
+          }
+
+          const uvHtml = `
+            <div class="uv-section">
+              <div class="uv-title">
+                <span>☀️ UV 指数（7 日間）</span>
+              </div>
+              <div class="uv-grid">
+                ${uvDays.map(day => `
+                  <div class="uv-day ${!day.hasData ? 'uv-no-data' : ''}">
+                    <div class="uv-day-name">${day.dateStr}</div>
+                    <div class="uv-value" style="color:${day.color}">${day.value || '-'}</div>
+                    <div class="uv-level">${day.level}</div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
 
           let weeklyHtml = '';
           if (weeklyDays.length > 0) {
             weeklyHtml = `
               <div class="weekly-section">
                 <div class="weekly-title">
-                  <span>📅 週間天気（5 日間）</span>
+                  <span>📅 週間天気（7 日間）</span>
                 </div>
                 <div class="weekly-grid">
                   ${weeklyDays.map(day => `
                     <div class="weekly-day">
-                      <div class="weekly-date">${day.date}</div>
+                      <div class="weekly-date">${day.dateStr}</div>
                       <img src="${day.icon}" alt="天気" class="weekly-icon">
                       <div class="weekly-temp">${day.temp}°C</div>
                       <div class="weekly-desc">${day.desc}</div>

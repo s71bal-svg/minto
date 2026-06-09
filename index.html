@@ -864,7 +864,32 @@ h1 {
           </div>
         </div>
         <aside class="hero-side card">
-          <div class="illustration"><div class="animal-art"><img src="./images/31.jpg" alt="動物の作品例" /></div></div>
+          <div class="illustration"><div class="animal-art"><img src="./images/31.jpg" alt="動物の作品例" />
+          <img id="heroImage" src="31.jpg" alt="">
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const img = document.getElementById('heroImage');
+  
+  // 画像ファイル一覧 (31.jpg, 32.jpg, 33.jpg ... など)
+  const images = ['31.jpg', '32.jpg', '33.jpg', '34.jpg', '35.jpg'];
+
+  function changeImage() {
+    const randomIndex = Math.floor(Math.random() * images.length);
+    img.src = images[randomIndex];
+  }
+
+  // ページ読み込み時にまず 1 回ランダム画像を表示
+  changeImage();
+
+  // 5 秒 (5000ms) ごとにランダム画像を切り替え
+  setInterval(changeImage, 5000);
+});
+</script>
+
+            
+          
+          </div></div>
         </aside>
       </section>
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="動物を主題に作品を制作する作家minto.のギャラリーサイトです。" />
+  <meta name="description" content="動物を主題に作品を制作する作家 minto.のギャラリーサイトです。" />
   <meta name="theme-color" content="#f2f4ef" />
   <title>minto.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,7 @@
   --bg: #faf9f7;
   --surface: #fefdfb;
   --surface-2: #f0ebe4;
-  --border: #e8dfd0;
+  --border: #e8efd0;
   --text: #1a1815;
   --muted: #6b6157;
   --faint: #9a8f85;
@@ -856,7 +856,7 @@ h1 {
         <div class="hero-main card">
           <div class="eyebrow">✨ Writer / Artist</div>
           <h1>動物の気配を、<br>静かに描く。</h1>
-          <p>動物を主題にした作品を制作する作家minto.のギャラリーサイトです。</p>
+          <p>動物を主題にした作品を制作する作家 minto.のギャラリーサイトです。</p>
           <p style="color: var(--faint); font-size: 0.9rem;">作品の余韻がそのまま伝わりますように。</p>
           <div class="hero-actions">
             <a class="btn btn-primary" href="#gallery">ギャラリーへ</a>
@@ -864,32 +864,12 @@ h1 {
           </div>
         </div>
         <aside class="hero-side card">
-          <div class="illustration"><div class="animal-art"><img src="./images/31.jpg" alt="動物の作品例" />
-          <img id="heroImage" src="31.jpg" alt="">
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const img = document.getElementById('heroImage');
-  
-  // 画像ファイル一覧 (31.jpg, 32.jpg, 33.jpg ... など)
-  const images = ['31.jpg', '9.JPG', '6.JPG', '22.jpg', '26.png'];
-
-  function changeImage() {
-    const randomIndex = Math.floor(Math.random() * images.length);
-    img.src = images[randomIndex];
-  }
-
-  // ページ読み込み時にまず 1 回ランダム画像を表示
-  changeImage();
-
-  // 5 秒 (5000ms) ごとにランダム画像を切り替え
-  setInterval(changeImage, 5000);
-});
-</script>
-
-            
-          
-          </div></div>
+          <div class="illustration">
+            <div class="animal-art">
+              <!-- ランダム画像が表示されるこちらだけを残す -->
+              <img id="heroImage" src="./images/31.jpg" alt="動物の作品例" />
+            </div>
+          </div>
         </aside>
       </section>
 
@@ -899,7 +879,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <article class="gallery-item">
             <div class="image"><img src="./images/6.JPG" alt="動物作品 1" /></div>
             <div class="caption">
-              <strong>作品名1</strong>
+              <strong>作品名 1</strong>
               <p>やわらかなまなざしと、丸まった体の静かな存在感を見せる作品です。</p>
               <a class="btn btn-detail" href="./work1.html">詳細を見る</a>
             </div>
@@ -908,7 +888,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <article class="gallery-item">
             <div class="image"><img src="./images/9.JPG" alt="動物作品 2" /></div>
             <div class="caption">
-              <strong>作品名2</strong>
+              <strong>作品名 2</strong>
               <p>しぐさの途中にある、少しだけ崩れた瞬間を切り取るように見せます。</p>
               <a class="btn btn-detail" href="./work2.html">詳細を見る</a>
             </div>
@@ -917,7 +897,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <article class="gallery-item">
             <div class="image"><img src="./images/22.jpg" alt="動物作品 3" /></div>
             <div class="caption">
-              <strong>作品名3</strong>
+              <strong>作品名 3</strong>
               <p>紙の質感とやさしい色面を活かした、落ち着いた構成の作品です。</p>
               <a class="btn btn-detail" href="./work3.html">詳細を見る</a>
             </div>
@@ -926,7 +906,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <article class="gallery-item">
             <div class="image"><img src="./images/26.png" alt="動物作品 4" /></div>
             <div class="caption">
-              <strong>作品名4</strong>
+              <strong>作品名 4</strong>
               <p>見る人が静かに息をつけるような、余白のある作品として配置します。</p>
               <a class="btn btn-detail" href="./work4.html">詳細を見る</a>
             </div>
@@ -950,7 +930,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <p>北欧インテリアのような、明るい余白と自然な色合いをベースにしています。作品が主役になるよう、色数はしぼって構成しています。</p>
             <div class="mini-list">
               <div class="mini-item"><strong>Color</strong>緑、生成り、やわらかなベージュを中心にします。</div>
-              <div class="mini-item"><strong>Texture</strong>紙の質感をうっすら重ね、あたたかさを出します。</div>
+              <div class="mini-item"><strong>Texture</strong>紙の質感をうっすら重ね、あたたかみを出します。</div>
               <div class="mini-item"><strong>Layout</strong>カードを大きめにして、ギャラリーの壁面のように見せます。</div>
             </div>
           </div>
@@ -1008,6 +988,33 @@ document.addEventListener('DOMContentLoaded', () => {
         top: 0,
         behavior: 'smooth'
       });
+    });
+  </script>
+
+  <!-- ランダム画像切り替えスクリプト -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const img = document.getElementById('heroImage');
+
+      // 画像ファイル一覧 (./images/ フォルダ内のファイル)
+      const images = [
+        './images/31.jpg',
+        './images/9.JPG',
+        './images/6.JPG',
+        './images/22.jpg',
+        './images/26.png'
+      ];
+
+      function changeImage() {
+        const randomIndex = Math.floor(Math.random() * images.length);
+        img.src = images[randomIndex];
+      }
+
+      // ページ読み込み時にまず 1 回ランダム画像を表示
+      changeImage();
+
+      // 5 秒 (5000ms) ごとにランダム画像を切り替え
+      setInterval(changeImage, 5000);
     });
   </script>
 </body>
